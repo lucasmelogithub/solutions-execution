@@ -42,7 +42,7 @@ winget install --id Git.Git --exact --silent --accept-package-agreements --accep
 
 ```powershell
 cd $HOME
-git clone https://github.com/OTCShare2/solutions-execution.git
+git clone https://github.com/lucasmelogithub/solutions-execution.git
 cd solutions-execution\workshop\cloud-workshop
 .\prereqs\install-tools.ps1
 ```
@@ -67,7 +67,7 @@ After all 5 are installed, **close PowerShell and open a new one** (PowerShell o
 
 ```powershell
 cd $HOME
-git clone https://github.com/OTCShare2/solutions-execution.git
+git clone https://github.com/lucasmelogithub/solutions-execution.git
 cd solutions-execution\workshop\cloud-workshop
 ```
 
