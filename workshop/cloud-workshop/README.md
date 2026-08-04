@@ -40,7 +40,7 @@ winget install --id Git.Git --exact --silent --accept-package-agreements --accep
 
 ```powershell
 cd $HOME
-git clone https://github.com/OTCShare2/solutions-execution.git
+git clone https://github.com/lucasmelogithub/solutions-execution.git
 cd solutions-execution\workshop\cloud-workshop
 .\prereqs\install-tools.ps1
 ```
@@ -72,7 +72,7 @@ After all 5 are installed, **close PowerShell and open a new one** (PowerShell o
 
 ```powershell
 cd $HOME
-git clone https://github.com/OTCShare2/solutions-execution.git
+git clone https://github.com/lucasmelogithub/solutions-execution.git
 cd solutions-execution\workshop\cloud-workshop
 ```
 
@@ -107,9 +107,9 @@ code .
 
 After VSCode opens. In the top menu choose **Terminal → New Terminal**. That terminal is also PowerShell — use it for the rest of the workshop.
 
-## 2 Choose your track
+## 2 Workshop
 
-Setup is done. Now pick a track below — **AWS**, **GCP**, or **both** (in any order). Each file is complete on its own and includes its own sign-in, deployment, and teardown.
+We suggest starting with the AWS track. Each file is complete on its own and includes its own sign-in, deployment, and teardown.
 
 | Track | What you'll do | Time |
 |-------|----------------|------|
