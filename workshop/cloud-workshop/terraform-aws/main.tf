@@ -16,8 +16,9 @@ terraform {
   }
 }
 
+# m8i is region-limited; us-east-1 is the safe default.
 provider "aws" {
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 # Use the account's default VPC to keep this module beginner-friendly.
@@ -88,12 +89,17 @@ resource "aws_security_group" "this" {
   description = "SSH (22) from Intel proxy CIDRs only"
   vpc_id      = data.aws_vpc.default.id
 
+  # Intel proxy egress ranges.
   ingress {
     description = "SSH from allowed CIDRs"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.allowed_cidrs
+    cidr_blocks = [
+      "134.134.0.0/16",
+      "192.55.0.0/16",
+      "146.152.0.0/16",
+    ]
   }
 
   egress {
@@ -112,16 +118,19 @@ resource "aws_security_group" "this" {
   }
 }
 
+# Intel Xeon 6 (Granite Rapids, AMX, DDR5): 128 vCPU / 512 GiB / 2 NUMA nodes
+# (vLLM tensor-parallel-size 2).
 resource "aws_instance" "vm" {
   ami                         = data.aws_ami.ubuntu.id
-  instance_type               = var.instance_type
+  instance_type               = "m8i.32xlarge"
   subnet_id                   = data.aws_subnets.default.ids[0]
   vpc_security_group_ids      = [aws_security_group.this.id]
   key_name                    = aws_key_pair.this.key_name
   associate_public_ip_address = true
 
+  # Headroom for the vLLM image + BF16 model weights (~61 GB).
   root_block_device {
-    volume_size           = var.root_volume_size_gb
+    volume_size           = 150
     volume_type           = "gp3"
     delete_on_termination = true
   }
