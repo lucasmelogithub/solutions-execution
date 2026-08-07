@@ -45,3 +45,9 @@ variable "allowed_cidrs" {
     "146.152.0.0/16",
   ]
 }
+
+variable "create_ssh_firewall" {
+  description = "Create a custom SSH firewall rule. Keep false when org policy blocks SSH/RDP ingress firewall creation."
+  type        = bool
+  default     = false
+}

@@ -33,6 +33,7 @@ Copy/paste this entire block into PowerShell and press Enter:
 
 ```powershell
 # 1. Install Git first (the script needs it to clone the repo)
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 winget install --id Git.Git --exact --silent --accept-package-agreements --accept-source-agreements
 ```
 
@@ -91,11 +92,6 @@ cd solutions-execution\workshop\cloud-workshop
 ```
 
 You should see green `[ OK ]` on every line (`git`, `code`, `aws`, `gcloud`, `terraform`, `ssh`, `connect`). If any line is red `[FAIL]` — **raise your hand**.
-
-> First time running a `.ps1` file? If PowerShell complains about "execution policy", run this once and try again:
-> ```powershell
-> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-> ```
 
 ## 1.4 Open the project in VSCode
 

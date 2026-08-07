@@ -104,7 +104,7 @@ resource "google_compute_instance" "vm" {
     initialize_params {
       image = data.google_compute_image.ubuntu.self_link
       size  = 20
-      type  = "pd-balanced"
+      type  = "hyperdisk-balanced"
     }
   }
 
