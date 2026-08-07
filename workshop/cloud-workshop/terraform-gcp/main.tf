@@ -81,7 +81,11 @@ resource "local_file" "ssh_config_no_proxy" {
   EOT
 }
 
+# Off by default: the org policy constraint custom.restrictSSHRDPrangesGCPranges
+# rejects any new SSH/RDP ingress rule, and the default VPC already ships
+# default-allow-ssh (tcp:22) for every instance in the project.
 resource "google_compute_firewall" "ssh" {
+  count   = var.create_ssh_firewall ? 1 : 0
   name    = "smg-${var.name_prefix}-allow-ssh"
   network = "default"
 

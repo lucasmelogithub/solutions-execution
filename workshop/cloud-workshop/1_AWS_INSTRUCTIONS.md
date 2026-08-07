@@ -192,7 +192,9 @@ curl -s http://127.0.0.1:8000/v1/models | jq '.data[].id'   # expect: "qwen3-30b
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 ```
 
-**Setup wizard:** The installer will launch a setup wizard at the end. When it asks about "Inference Provider" and tries to log in to Nous Portal, press **Ctrl+C** to skip it — we'll configure the model manually in the next step.
+**NOTE:**
+- At the end of the installer, it will launch a setup wizard on asking **"How would you like to set up Hermes?"**
+- When it does, press **Ctrl+C** two times to skip it, we'll configure the Hermes Agent manually in the next step.
 
 ## 10 Configure Hermes Agent to use the local model
 
@@ -249,7 +251,7 @@ These prompts are short and self-contained, so the agent finishes quickly. Each 
 #### 1. Quick system snapshot
 
 ```text
-In one short paragraph, tell me this server's CPU model, total number of cores, and total RAM. Keep it brief.
+In one short paragraph, tell me this server's CPU model, total number of cores, and total RAM. Keep it brief. And tell me if this system supports Intel AMX.
 ```
 
 #### 2. Create and read a file
@@ -261,8 +263,10 @@ Create a folder called ~/demo and write a file named system.txt inside it contai
 #### 3. Build and run a small app
 
 ```text
-Write a short pure-Python script in ~/demo that renders the Mandelbrot set as ASCII art in the terminal, using only the standard library — do not install anything. Then run it and show me the output.
+Write a short Python script at ~/demo/pi.py that estimates Pi with the Monte Carlo method, using the multiprocessing module to spread 20 million random points across every CPU core. Print the number of cores used, the estimate, and how many seconds it took. Standard library only, plain text, no colours. Then run it and show me the output.
 ```
+
+> **What you're looking at:** the script fans 20 million random points out across all 128 vCPUs of this Xeon 6 and finishes in a couple of seconds.
 
 #### 4. Create and run your own command
 
