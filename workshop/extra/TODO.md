@@ -1,7 +1,7 @@
 
 # TODO
 
-- Update Github repo URLs once moved to new repo. Example, line 49 of instructions
+- Update Github repo URLs once moved to new repo. Example, line 49 of instructions 
 - Request AWS account
 - Request GCP Account
 - Create AWS Access Key and Secrets
