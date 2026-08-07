@@ -53,7 +53,7 @@ terraform init
 terraform apply
 ```
 
-1. Monitor the output. Terraform is telling GCP to create a new VM, SSH keypair, and firewall rule. The `terraform apply` step shows you the **plan** of what will be created.
+1. Monitor the output. Terraform is telling GCP to create a new VM and an SSH keypair. The `terraform apply` step shows you the **plan** of what will be created.
 2. Enter `yes` to confirm. Terraform will then create the resources.
 3. When it finishes, Terraform writes an SSH keypair (`tfkey` / `tfkey.pub`) and an `ssh_config` file in this folder, with the Intel proxy already wired up.
 
@@ -158,7 +158,7 @@ cd $HOME\solutions-execution\workshop\cloud-workshop\terraform-gcp
 terraform destroy
 ```
 
-1. Review the plan. Terraform shows you everything it will **destroy** (the VM, firewall rule, and SSH keypair).
+1. Review the plan. Terraform shows you everything it will **destroy** (the VM and the SSH keypair).
 2. Enter `yes` to confirm. Terraform tears down the resources and ends with `Destroy complete!`.
 
 **Show your screen to a workshop assistant before you leave.**

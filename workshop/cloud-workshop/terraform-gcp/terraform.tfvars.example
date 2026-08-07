@@ -1,6 +1,6 @@
 # Copy this file to terraform.tfvars and edit.
 # name_prefix: a short lowercase prefix unique to you (3-10 letters). Your first name works well, e.g. bob.
-# name_prefix = "changeme"
+# name_prefix = "bob"
 # project_id  = "your-sandbox-project-id" # paste from instructor handout
 
 # Module 2 teaching moment: keep machine_type at c4a-standard-2 and
@@ -9,6 +9,3 @@
 # to get an Intel TDX Confidential VM.
 machine_type           = "c4a-standard-2"
 enable_confidential_vm = false
-
-# Override only if you are off Intel's network:
-# allowed_cidrs = ["0.0.0.0/0"]
