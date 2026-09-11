@@ -17,17 +17,15 @@ In order, you will:
 
 ## 1 Sign in to GCP
 
-You will receive a **handout** with the sandbox `project-id`. Sign in with the workshop Google account (this opens a browser) and set your project:
+1. Download the provided JSON file (gcp-workshop.json) to your downloads folder
+2. Run the following command 
 
 ```powershell
-gcloud auth login
-gcloud config set project <project-id-from-handout>
-
-# ALSO required: Application Default Credentials, which Terraform uses
-gcloud auth application-default login
+gcloud auth activate-service-account --key-file="$HOME\Downloads\gcp-workshop.json"
+$env:GOOGLE_APPLICATION_CREDENTIALS = "$HOME\Downloads\gcp-workshop.json"
+gcloud config set project dxmr-tech-accel-gcp-intel
 ```
-
-> Why two `gcloud` logins? The first authenticates the **`gcloud` CLI**. The second writes Application Default Credentials to disk, which **Terraform's google provider** reads.
+When prompted if you wish to continue, type `Y`
 
 ## 2 Move into the GCP folder
 

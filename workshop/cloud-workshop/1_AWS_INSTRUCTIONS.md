@@ -48,7 +48,7 @@ code terraform.tfvars
 ```
 
 1. In VSCode, change `name_prefix = "changeme"` to your first name (e.g., `bob`).
-2. Remove the comment `#` .
+2. Remove the comment `#` on line #3 .
 3. Save the file.
 
 ## 5 Deploy the Intel Xeon 6 instance with Terraform
@@ -74,7 +74,7 @@ ssh -F ssh_config vm
 
 You are now logged into an Ubuntu box running on Xeon 6. The shell prompt looks like `ubuntu@ip-...`.
 
-Validate AMX is present, and confirm this instance exposes **2 NUMA nodes** (vLLM will bind one worker to each):
+Validate AMX is present
 
 ```bash
 # Confirm the AMX instruction set is present
@@ -318,7 +318,7 @@ TTFT is the key AMX metric: with long prompts or batched requests, prefill domin
 
 ## 12 Teardown — DO NOT SKIP
 
-When you're done exploring, first leave the SSH session (type `exit`) to return to Windows PowerShell. Then tear everything down so the sandbox stops billing:
+When you're done exploring, first leave the hermes chat (type `/quit`) and then the SSH session (type `exit`) to return to Windows PowerShell. Then tear everything down so the sandbox stops billing:
 
 ```powershell
 cd $HOME\solutions-execution\workshop\cloud-workshop\terraform-aws
@@ -333,6 +333,7 @@ terraform destroy
 ---
 
 ## You did it
+<img src="https://previews.123rf.com/images/lydialyd/lydialyd1703/lydialyd170300013/72976056-vector-pattern-with-words-congratulations-you-did-it-and-hand-drawn-cartoon-black-and-white-cat.jpg" alt="You did it" width="200">
 
 In this workshop you:
 
