@@ -44,7 +44,7 @@ Set `name_prefix` to a short **lowercase** prefix unique to you — your **first
 
 > `c4a` is GCP's Axion family — **ARM CPUs**. Looks innocent. Not Intel — and ARM has no Intel TDX.
 
-## 4 Deploy and SSH in
+## 4 Deploy GCP Axion ARM VM
 
 ```powershell
 terraform init
@@ -53,9 +53,9 @@ terraform apply
 
 1. Monitor the output. Terraform is telling GCP to create a new VM and an SSH keypair. The `terraform apply` step shows you the **plan** of what will be created.
 2. Enter `yes` to confirm. Terraform will then create the resources.
-3. When it finishes, Terraform writes an SSH keypair (`tfkey` / `tfkey.pub`) and an `ssh_config` file in this folder, with the Intel proxy already wired up.
 
-Connect:
+
+SSH to new VM:
 
 ```powershell
 ssh -F ssh_config vm
@@ -75,31 +75,35 @@ sudo dmesg | grep -i "memory encryption"
 
 `Architecture: aarch64`. The `grep` for `tdx` returns **nothing**, and `dmesg` shows **no** memory-encryption line.
 
-**This is the teaching moment** — the customer asked for "a small cloud VM" and got an ARM box. Intel TDX (Trust Domain Extensions) is a **confidential computing** feature of **Intel Xeon** — it does not exist on ARM.
+Intel TDX (Trust Domain Extensions) is a **confidential computing** feature of **Intel Xeon** — it does not exist on ARM.
 
 Exit the VM (`exit`).
 
 ## 6 Switch to Intel + turn on Confidential Computing, then redeploy
 
+Using a simple variable edit, you can switch the VM from ARM to Intel TDX.
+
 ```powershell
 code terraform.tfvars
 ```
 
-Change **both** of these:
+Comment this out
 
 ```hcl
-machine_type           = "c4a-standard-2"
-enable_confidential_vm = false
+#machine_type           = "c4a-standard-2"
+#enable_confidential_vm = false
 ```
 
-to:
+Uncomment and update to the Intel TDX configuration:
 
 ```hcl
 machine_type           = "c3-standard-4"
 enable_confidential_vm = true
 ```
 
-> Why two changes? Intel TDX needs **both** an Intel Xeon CPU (the `c3` family) **and** Confidential Computing switched on. A Confidential VM is a deliberate opt-in — the VM name alone never turns it on.
+Why two changes? 
+
+Intel TDX needs **both** an Intel Xeon CPU (the `c3` family) **and** Confidential Computing switched on. A Confidential VM is a deliberate opt-in — the VM name alone never turns it on.
 
 Save. Re-apply:
 
@@ -107,9 +111,11 @@ Save. Re-apply:
 terraform apply 
 ```
 
-Watch the plan. It will show `1 to destroy, 1 to add`. In one small edit you just swapped an ARM box for an Intel Xeon **Confidential VM** — that's the power of Terraform: change a couple of variables and it rebuilds the underlying infrastructure for you.
-
 Enter `yes` to confirm. Wait for the new VM to be created. (Confidential VMs boot and accept SSH a little slower than normal VMs — give it a minute.)
+Watch the plan. It will show `1 to destroy, 1 to add`. 
+
+In one small edit you just swapped an ARM instance for an Intel Xeon **Confidential VM** — that's the power of Terraform: change a couple of variables and it rebuilds the underlying infrastructure for you.
+
 
 ## 7 SSH in and confirm Intel TDX is active
 
@@ -127,7 +133,6 @@ sudo dmesg | grep -i "memory encryption"
 
 `Architecture: x86_64`, `Model name: Intel(R) Xeon(R) ...`, the `grep` now prints **`tdx_guest`**, and `dmesg` reports **`Memory Encryption Features active: Intel TDX`**.
 
-That last line is the proof: the guest's memory is hardware-encrypted inside an Intel TDX Trust Domain. Exit the VM (`exit`).
 
 You can also confirm it from the control plane — no SSH needed. Back in PowerShell, replace `<name_prefix>` with the prefix you chose:
 
@@ -141,15 +146,17 @@ It prints `confidentialInstanceType: TDX`. You have now proven Intel TDX is acti
 
 You have now proven that:
 
-- Intel TDX is absent on ARM instances.
 - Terraform can switch from ARM to an Intel Xeon Confidential VM with a two-line edit and one redeploy.
+- Intel TDX is absent on ARM instances.
 - Intel TDX confidential computing is active on the Intel Xeon (`c3`) Confidential VM.
 
 ---
 
 ## 8 Teardown — DO NOT SKIP
 
-When you're done, tear everything down so the sandbox stops billing. Run from the `terraform-gcp` folder (or use the full path below):
+Enter `exit` to leave the VM before tearing down the infrastructure.
+
+When you're done, tear everything down so the sandbox stops billing.
 
 ```powershell
 cd $HOME\solutions-execution\workshop\cloud-workshop\terraform-gcp
@@ -159,7 +166,6 @@ terraform destroy
 1. Review the plan. Terraform shows you everything it will **destroy** (the VM and the SSH keypair).
 2. Enter `yes` to confirm. Terraform tears down the resources and ends with `Destroy complete!`.
 
-**Show your screen to a workshop assistant before you leave.**
 
 ---
 

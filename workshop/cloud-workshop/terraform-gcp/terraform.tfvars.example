@@ -1,11 +1,9 @@
-# Copy this file to terraform.tfvars and edit.
-# name_prefix: a short lowercase prefix unique to you (3-10 letters). Your first name works well, e.g. bob.
-# name_prefix = "bob"
-# project_id  = "your-sandbox-project-id" # paste from instructor handout
+name_prefix = "bob"  # CHANGE TO YOUR UNIQUE PREFIX (3-8 letters)
 
-# Module 2 teaching moment: keep machine_type at c4a-standard-2 and
-# enable_confidential_vm = false for the FIRST apply (ARM, no Intel TDX). Then change
-# machine_type to "c3-standard-4" AND set enable_confidential_vm = true, and re-apply
-# to get an Intel TDX Confidential VM.
+# ARM based GCP Instance
 machine_type           = "c4a-standard-2"
 enable_confidential_vm = false
+
+# Intel TDX based GCP Instance
+#machine_type           = "c3-standard-4"
+#enable_confidential_vm = true

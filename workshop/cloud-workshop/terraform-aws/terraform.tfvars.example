@@ -1,3 +1,1 @@
-# Required: pick a short lowercase prefix unique to you. Must be 3-10 letters.
-# Your name works well. Example: bob
-# name_prefix = "bob" 
+name_prefix = "bob"  # CHANGE TO YOUR UNIQUE PREFIX (3-8 letters)
