@@ -6,6 +6,16 @@
 
 A hands-on workshop that takes Intel Technical Sellers from **never having opened VSCode** to **deploying and validating Intel features in the cloud**.
 
+
+### Workshop flow overview
+
+```mermaid
+flowchart LR
+    A["1. Setup (15 min)<br/>VS Code & Tools"] --> B["2. Track 1: AWS (90 min)<br/><b>AI on Intel Xeon 6</b><br/>• Deploy Xeon 6 VM<br/>• Run AI Agent with AMX"]
+    B --> C["3. Track 2: GCP (30 min)<br/><b>Confidential Cloud</b><br/>• ARM vs Intel TDX<br/>• Hardware Memory Security"]
+    C --> D["4. Wrap Up & Teardown<br/>Destroy Resources"]
+```
+
 After a one-time setup, you choose your track — **AWS**, **GCP**, or **both**. Each track is self-contained: do either one on its own, in any order.
 
 > Audience: 30 Intel Technical Sellers, no prior experience with VSCode, Git, CLIs, cloud consoles, or Terraform.
