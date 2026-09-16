@@ -15,6 +15,8 @@ In order, you will:
 3. Change **two settings** — the machine type to `c3-standard-4` (Intel **Xeon**, Sapphire Rapids) and `enable_confidential_vm` to `true` — and redeploy.
 4. Confirm Intel TDX is now active (`tdx_guest`, memory encryption, `confidentialInstanceType: TDX`).
 
+![GCP architecture diagram](images/gcp_diagram.png)
+
 ## 1 Sign in to GCP
 
 1. Download the provided JSON file (gcp-workshop.json) to your downloads folder
