@@ -61,10 +61,6 @@ cd solutions-execution\workshop\cloud-workshop
 
 The script installs: VSCode, AWS CLI, Google Cloud SDK, Terraform. It takes ~5 minutes.
 
-```powershell
-cd $HOME\solutions-execution\workshop\cloud-workshop
-```
-
 When it finishes, **close PowerShell and open a new one** (so the new tools land on your `PATH`), then return to the folder and continue to step 1.3:
 
 ---
