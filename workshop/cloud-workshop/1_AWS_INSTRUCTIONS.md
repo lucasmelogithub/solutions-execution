@@ -15,6 +15,8 @@ In order, you will:
 3. Install Hermes Agent and connect it to the local AMX-accelerated model.
 4. Watch the agent autonomously use tools to complete real tasks, then measure AMX inference performance.
 
+![AWS architecture diagram](images/aws_diagram.png)
+
 ---
 
 ## 1 Sign in to AWS
