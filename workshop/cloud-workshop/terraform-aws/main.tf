@@ -118,11 +118,13 @@ resource "aws_security_group" "this" {
   }
 }
 
-# Intel Xeon 6 (Granite Rapids, AMX, DDR5): 128 vCPU / 512 GiB / 2 NUMA nodes
-# (vLLM tensor-parallel-size 2).
+# Intel Xeon 6 (Granite Rapids, AMX, DDR5): 64 vCPU / 256 GiB.
+# Sized so a full workshop cohort can launch concurrently — us-east-1 does not
+# reliably have On-Demand capacity for 30 x m8i.32xlarge. Set vLLM
+# tensor-parallel-size to the instance NUMA node count (see step 6).
 resource "aws_instance" "vm" {
   ami                         = data.aws_ami.ubuntu.id
-  instance_type               = "m8i.32xlarge"
+  instance_type               = "m8i.16xlarge"
   subnet_id                   = data.aws_subnets.default.ids[0]
   vpc_security_group_ids      = [aws_security_group.this.id]
   key_name                    = aws_key_pair.this.key_name

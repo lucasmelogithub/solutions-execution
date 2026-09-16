@@ -10,8 +10,8 @@ Deploy an AWS EC2 **Xeon 6** instance with Intel AMX, serve a local LLM with [vL
 
 In order, you will:
 
-1. Deploy an AWS EC2 `m8i.32xlarge` (Xeon 6 with **AMX**, 128 vCPU, 512 GB DDR5, **2 NUMA nodes**).
-2. Serve **Qwen3-30B-A3B** (a fast Mixture-of-Experts model) with vLLM's pre-built CPU Docker image — BF16 weights light up the **AMX** matrix tiles, and 2-way tensor parallelism puts one worker on each NUMA node.
+1. Deploy an AWS EC2 `m8i.16xlarge` (Xeon 6 with **AMX**, 64 vCPU, 256 GB DDR5).
+2. Serve **Qwen3-30B-A3B** (a fast Mixture-of-Experts model) with vLLM's pre-built CPU Docker image — BF16 weights light up the **AMX** matrix tiles, and tensor parallelism puts one worker on each NUMA node.
 3. Install Hermes Agent and connect it to the local AMX-accelerated model.
 4. Watch the agent autonomously use tools to complete real tasks, then measure AMX inference performance.
 
@@ -88,10 +88,16 @@ Validate CPU
 lscpu
 ```
 
-Validate NUMA nodes
+Validate NUMA nodes and capture the count for vLLM
 ```bash
-lscpu | grep "NUMA node(s):"      # expect: NUMA node(s): 2
+lscpu | grep "NUMA node(s):"
+
+# Save the count — step 8 uses it to size tensor parallelism
+export NUMA_NODES=$(lscpu | awk '/^NUMA node\(s\):/{print $3}')
+echo "NUMA nodes: $NUMA_NODES"
 ```
+
+> If you reconnect to the instance later, re-run the `export NUMA_NODES=...` line before step 8.
 
 ## 7 Install Docker and set your HuggingFace token
 
@@ -115,7 +121,7 @@ export HF_TOKEN=<your-token-from-email>
 
 ## 8 Start vLLM with AMX, NUMA-aware tensor parallelism, and tool calling
 
-vLLM ships a pre-built CPU image that already includes the AMX-optimized kernels. We launch it with **2-way tensor parallelism** — one worker bound to each NUMA node — so both nodes' memory bandwidth feed a single request. BF16 weights are what light up the AMX matrix tiles.
+vLLM ships a pre-built CPU image that already includes the AMX-optimized kernels. We launch it with **one tensor-parallel worker per NUMA node**, so all of the instance's memory bandwidth feeds a single request. BF16 weights are what light up the AMX matrix tiles.
 
 <!-- Other LLM options
 - NousResearch/Hermes-4-14B 
@@ -152,7 +158,7 @@ docker run -d --name vllm \
   vllm/vllm-openai-cpu:v0.21.0-x86_64 \
   Qwen/Qwen3-30B-A3B-Instruct-2507 \
   --served-model-name qwen3-30b \
-  --tensor-parallel-size 2 \
+  --tensor-parallel-size ${NUMA_NODES} \
   --dtype bfloat16 \
   --enable-auto-tool-choice \
   --tool-call-parser hermes \
@@ -171,11 +177,11 @@ echo "vLLM is up and serving with AMX + tool calling"
 > | `VLLM_CPU_OMP_THREADS_BIND=auto` | Bind each tensor-parallel worker's threads to its own NUMA node |
 
 > **Key vLLM flags:**
-> - `--tensor-parallel-size 2` — one worker per NUMA node; both nodes' memory bandwidth serve each token. Matches the `NUMA node(s): 2` you saw in step 6.
+> - `--tensor-parallel-size ${NUMA_NODES}` — one worker per NUMA node, so all of the instance's memory bandwidth serves each token. Uses the value you captured in step 6.
 > - `--dtype bfloat16` — **Required** for the AMX matrix tiles (this is vLLM's equivalent of llama.cpp's `GGML_AMX=ON`).
 > - `--enable-auto-tool-choice --tool-call-parser hermes` — **Required** for tool/function calling. Qwen3 emits Hermes-style tool calls; without these, Hermes Agent cannot execute tools. (This replaces llama.cpp's `--jinja`.)
 
-> **Docker flags:** `--network host` lets vLLM listen directly on `127.0.0.1:8000`. `--cap-add SYS_NICE` and `--security-opt seccomp=unconfined` enable NUMA-aware thread and memory binding. `--shm-size=16g` gives the two tensor-parallel workers shared memory to communicate through.
+> **Docker flags:** `--network host` lets vLLM listen directly on `127.0.0.1:8000`. `--cap-add SYS_NICE` and `--security-opt seccomp=unconfined` enable NUMA-aware thread and memory binding. `--shm-size=16g` gives the tensor-parallel workers shared memory to communicate through.
 
 > **Why Qwen3-30B-A3B-Instruct-2507?** Hermes Agent needs strong tool calling **and** low latency. This is a Mixture-of-Experts model — 30.5B total parameters but only **3.3B active per token** — so it decodes on CPU like a small model while answering like a large one. It has native tool-calling training, responds directly with no hidden "thinking" tokens, ships in **BF16** (so the AMX kernels engage), natively supports a **256K context window** (so no rope-scaling overrides are needed), and is Apache 2.0 licensed.
 
@@ -268,7 +274,7 @@ Create a folder called ~/demo and write a file named system.txt inside it contai
 Write a short Python script at ~/demo/pi.py that estimates Pi with the Monte Carlo method, using the multiprocessing module to spread 20 million random points across every CPU core. Print the number of cores used, the estimate, and how many seconds it took. Standard library only, plain text, no colours. Then run it and show me the output.
 ```
 
-> **What you're looking at:** the script fans 20 million random points out across all 128 vCPUs of this Xeon 6 and finishes in a couple of seconds.
+> **What you're looking at:** the script fans 20 million random points out across all 64 vCPUs of this Xeon 6 and finishes in a couple of seconds.
 
 #### 4. Create and run your own command
 
@@ -314,7 +320,7 @@ curl -s http://127.0.0.1:8000/metrics | grep -E "vllm:(time_to_first_token|time_
 | Metric | What it measures | Bottleneck |
 |---|---|---|
 | Time to first token (TTFT) | How fast the model digests the prompt before generating | **Compute-bound** — this is where the AMX matrix tiles dominate |
-| Time per output token (TPOT) | How fast the model emits each new token | **Memory-bandwidth bound** — the two NUMA nodes' DDR5 bandwidth (via tensor parallelism) helps here |
+| Time per output token (TPOT) | How fast the model emits each new token | **Memory-bandwidth bound** — the instance's DDR5 bandwidth across all NUMA nodes (via tensor parallelism) helps here |
 
 TTFT is the key AMX metric: with long prompts or batched requests, prefill dominates total latency, and that's exactly the compute-bound regime AMX accelerates. -->
 
