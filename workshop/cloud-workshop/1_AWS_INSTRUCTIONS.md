@@ -50,8 +50,16 @@ code terraform.tfvars
 ```
 
 1. In VSCode, change `name_prefix = "changeme"` to your first name (e.g., `bob`).
-2. Remove the comment `#` on line #3 .
+2. Remove everything after your name on that line.
 3. Save the file.
+
+Before running Terraform, re-run the proxy exports in the VSCode PowerShell terminal:
+
+```powershell
+$env:HTTP_PROXY = "http://proxy-dmz.intel.com:911"
+$env:HTTPS_PROXY = "http://proxy-dmz.intel.com:912"
+$env:NO_PROXY = "localhost,127.0.0.1,intel.com,.intel.com"
+```
 
 ## 5 Deploy the Intel Xeon 6 instance with Terraform
 
@@ -108,6 +116,7 @@ docker --version
 
 ```bash
 # 4. Set your HuggingFace token for faster, un-throttled downloads
+# Remove the brackets and replace the placeholder with your HuggingFace token.
 export HF_TOKEN=<your-token-from-email>
 ```
 
