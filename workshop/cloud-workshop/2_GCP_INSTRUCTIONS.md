@@ -42,7 +42,8 @@ Copy-Item terraform.tfvars.example terraform.tfvars
 code terraform.tfvars
 ```
 
-Set `name_prefix` to a short **lowercase** prefix unique to you — your **first name** works well (e.g., `bob`), 3–10 letters, no spaces or capitals. **Paste the `project_id`** from your handout. **Leave `machine_type` set to `c4a-standard-2` and `enable_confidential_vm` set to `false` for now.** Save.
+Set `name_prefix` to a short **lowercase** prefix unique to you — your **first name** works well (e.g., `bob`), 3–10 letters, no spaces or capitals. 
+**Leave `machine_type` set to `c4a-standard-2` and `enable_confidential_vm` set to `false` for now.** Save.
 
 > `c4a` is GCP's Axion family — **ARM CPUs**. Looks innocent. Not Intel — and ARM has no Intel TDX.
 
