@@ -32,7 +32,7 @@ When prompted if you wish to continue, type `Y`
 ## 2 Move into the GCP folder
 
 ```powershell
-cd terraform-gcp
+cd $HOME\solutions-execution\workshop\cloud-workshop\terraform-gcp
 ```
 
 ## 3 Create your `terraform.tfvars`
@@ -55,6 +55,7 @@ terraform apply
 
 1. Monitor the output. Terraform is telling GCP to create a new VM and an SSH keypair. The `terraform apply` step shows you the **plan** of what will be created.
 2. Enter `yes` to confirm. Terraform will then create the resources.
+3. If Terraform prompts for the project ID, enter `dxmr-tech-accel-gcp-intel`.
 
 
 SSH to new VM:
