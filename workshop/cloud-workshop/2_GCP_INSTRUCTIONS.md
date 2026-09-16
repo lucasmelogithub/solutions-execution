@@ -23,6 +23,9 @@ In order, you will:
 2. Run the following command 
 
 ```powershell
+$env:HTTP_PROXY = "http://proxy-dmz.intel.com:911"
+$env:HTTPS_PROXY = "http://proxy-dmz.intel.com:912"
+$env:NO_PROXY = "localhost,127.0.0.1,intel.com,.intel.com"
 gcloud auth activate-service-account --key-file="$HOME\Downloads\gcp-workshop.json"
 $env:GOOGLE_APPLICATION_CREDENTIALS = "$HOME\Downloads\gcp-workshop.json"
 gcloud config set project dxmr-tech-accel-gcp-intel
@@ -50,6 +53,9 @@ Set `name_prefix` to a short **lowercase** prefix unique to you — your **first
 ## 4 Deploy GCP Axion ARM VM
 
 ```powershell
+$env:HTTP_PROXY = "http://proxy-dmz.intel.com:911"
+$env:HTTPS_PROXY = "http://proxy-dmz.intel.com:912"
+$env:NO_PROXY = "localhost,127.0.0.1,intel.com,.intel.com"
 terraform init
 terraform apply
 ```
